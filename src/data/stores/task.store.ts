@@ -9,7 +9,11 @@ interface TaskState {
   error?: string;
 
   loadTasks: () => Promise<void>;
-  addTask: (title: string, description?: string) => Promise<void>;
+  addTask: (
+    title: string,
+    userId: number,
+    description?: string,
+  ) => Promise<void>;
   toggleTask: (id: number) => Promise<void>;
   deleteTask: (id: number) => Promise<void>;
 }
@@ -29,11 +33,12 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     }
   },
 
-  addTask: async (title, description) => {
+  addTask: async (title, userId,description) => {
     set({ loading: true, error: undefined });
     try {
       const id = await taskRepoDexie.add({
         title,
+        userId,
         description,
         state: "A",
         registration_date: new Date(),
@@ -52,9 +57,8 @@ export const useTaskStore = create<TaskState>((set, get) => ({
       const task = await taskRepoDexie.getById(id);
       if (task) {
         await taskRepoDexie.update(id, {
-          state: task.state === "A" ? "C" : "A",  // o lógica que definas
-          finalization_date:
-            task.state === "A" ? new Date() : undefined,
+          state: task.state === "A" ? "C" : "A", // o lógica que definas
+          finalization_date: task.state === "A" ? new Date() : undefined,
         });
       }
       const all = await taskRepoDexie.getAll();

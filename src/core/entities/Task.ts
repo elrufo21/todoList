@@ -5,4 +5,5 @@ export interface Task {
     state:string
     registration_date: Date
     finalization_date?: Date
+    userId:number
 }

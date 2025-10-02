@@ -1,12 +1,11 @@
-import type { Task } from "../entities/Task";
-import type { TaskRepository } from "../repositories/TaskRepository";
+import type { Task } from "../../entities/Task";
+import type { TaskRepository } from "../../repositories/TaskRepository";
 
 export const makeAddTask = (repo: TaskRepository) => {
   return async (payload: {
     title: string;
     description?: string;
-    // No pedimos state aquí porque lo definimos internamente
-    // No pedimos registration_date ni finalization_date; se generan internamente
+    userId:number
   }): Promise<number> => {
     const titleClean = payload.title?.trim();
     if (!titleClean) {
@@ -16,8 +15,9 @@ export const makeAddTask = (repo: TaskRepository) => {
     const taskToCreate: Omit<Task, "id" | "finalization_date"> = {
       title: titleClean,
       description: payload.description,
-      state: "A",  // A de “activo” o como definas el estado inicial
+      state: "A",  
       registration_date: new Date(),
+      userId: payload.userId
     };
 
     const newId = await repo.add(taskToCreate);

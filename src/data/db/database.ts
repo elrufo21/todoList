@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable } from "dexie";
 import type { Task } from "../../core/entities/Task";
 
-export const db = new Dexie("TaskDatabase") as Dexie & {
+export const db = new Dexie("ToDoDB") as Dexie & {
   tasks: EntityTable<Task, "id">;
 };
 
